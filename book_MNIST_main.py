@@ -3,6 +3,7 @@ import torch.nn as nn
 from torch.autograd import Variable
 import torch.optim as optim
 import torch.nn.functional as F
+import io
 
 import torchvision.datasets as dsets
 import torchvision.transforms as transforms
@@ -77,6 +78,19 @@ net = ConvNet()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
+# # Print model's state_dict
+# print("Model's state_dict:")
+# for param_tensor in net.state_dict():
+#     print(param_tensor, "\t", net.state_dict()[param_tensor].size())
+#
+# # Print optimizer's state_dict
+# print("Optimizer's state_dict:")
+# for var_name in optimizer.state_dict():
+#     print(var_name, "\t", optimizer.state_dict()[var_name])
+
+# # SAVE model"net" test
+# torch.save(net.state_dict(), 'model.test')
+
 record = []
 weights = []
 
@@ -106,22 +120,23 @@ for epoch in range(num_epochs):
             record.append((100-100.*train_r[0]/train_r[1], 100-100.*val_r[0]/val_r[1]))
             weights.append([net.conv1.weight.data.clone(), net.conv1.bias.data.clone(), net.conv2.weight.data.clone(), net.conv2.bias.data.clone()])
 
-net.eval()
-vals = []
-for data, target in test_loader:
-    data, target = Variable(data), Variable(target)
-    output = net(data)
-    val = rightness(output, target)
-    vals.append(val)
-
-right = (sum([tup[0] for tup in vals]), sum([tup[1] for tup in vals]))
-right_rate = 1.0*right[0]/right[1]
-print(right_rate.data)
-
-plt.figure(figsize=(10, 7))
-plt.plot(record)
-plt.legend()
-plt.xlabel('step')
-plt.ylabel('Error rate')
-plt.show()
+torch.save(net.state_dict(), 'model_only weights')
+# net.eval()
+# vals = []
+# for data, target in test_loader:
+#     data, target = Variable(data), Variable(target)
+#     output = net(data)
+#     val = rightness(output, target)
+#     vals.append(val)
+#
+# right = (sum([tup[0] for tup in vals]), sum([tup[1] for tup in vals]))
+# right_rate = 1.0*right[0]/right[1]
+# print(right_rate.data)
+#
+# plt.figure(figsize=(10, 7))
+# plt.plot(record)
+# plt.legend()
+# plt.xlabel('step')
+# plt.ylabel('Error rate')
+# plt.show()
 
