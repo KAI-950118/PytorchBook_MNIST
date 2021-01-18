@@ -120,7 +120,8 @@ for epoch in range(num_epochs):
             record.append((100-100.*train_r[0]/train_r[1], 100-100.*val_r[0]/val_r[1]))
             weights.append([net.conv1.weight.data.clone(), net.conv1.bias.data.clone(), net.conv2.weight.data.clone(), net.conv2.bias.data.clone()])
 
-torch.save(net.state_dict(), 'model_only weights')
+torch.save(net, 'integral_model.pth')
+torch.save(net.state_dict(), 'model_only weights.pth')
 # net.eval()
 # vals = []
 # for data, target in test_loader:
