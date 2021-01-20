@@ -135,29 +135,30 @@ plt.figure(figsize=(10, 7))
 for i in range(4):
     plt.subplot(1, 4, i+1)
     plt.imshow(net_cpu.conv1.weight.data.numpy()[i, 0, ...])
+plt.show()
+
+## Analysis
+# input_x = test_dataset[idx][0].unsqueeze(0)
+# # print(input_x)
+# # print(test_dataset[idx][0])
+# feature_maps = net.retrieve_feature(Variable(input_x))
+# plt.figure(figsize=(10, 7))
+# for i in range(4):
+#     plt.subplot(1, 4, i+1)
+#     plt.imshow(feature_maps[0][0, i, ...].data.numpy())
 # plt.show()
-
-input_x = test_dataset[idx][0].unsqueeze(0)
-# print(input_x)
-# print(test_dataset[idx][0])
-feature_maps = net.retrieve_feature(Variable(input_x))
-plt.figure(figsize=(10, 7))
-for i in range(4):
-    plt.subplot(1, 4, i+1)
-    plt.imshow(feature_maps[0][0, i, ...].data.numpy())
-plt.show()
-
-plt.figure(figsize=(15, 10))
-for i in range(4):
-    for j in range(8):
-        plt.subplot(4, 8, i*8+j+1)
-        plt.imshow(net_cpu.conv2.weight.data.numpy()[j, i, ...])
-
-plt.figure(figsize=(10, 7))
-for i in range(8):
-    plt.subplot(2, 4, i+1)
-    plt.imshow(feature_maps[1][0, i, ...].data.numpy())
-plt.show()
+#
+# plt.figure(figsize=(15, 10))
+# for i in range(4):
+#     for j in range(8):
+#         plt.subplot(4, 8, i*8+j+1)
+#         plt.imshow(net_cpu.conv2.weight.data.numpy()[j, i, ...])
+#
+# plt.figure(figsize=(10, 7))
+# for i in range(8):
+#     plt.subplot(2, 4, i+1)
+#     plt.imshow(feature_maps[1][0, i, ...].data.numpy())
+# plt.show()
 
 
 

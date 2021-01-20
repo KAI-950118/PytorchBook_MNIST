@@ -4,10 +4,8 @@ from torch.autograd import Variable
 import torch.optim as optim
 import torch.nn.functional as F
 import io
-
 import torchvision.datasets as dsets
 import torchvision.transforms as transforms
-
 import matplotlib.pyplot as plt
 import numpy as np
 from numba import cuda
@@ -20,6 +18,7 @@ num_classes = 10
 num_epochs = 2
 batch_size = 64
 
+## Data pre-process
 train_dataset = dsets.MNIST(root='./data', train=True, transform=transforms.ToTensor(), download=True)
 test_dataset = dsets.MNIST(root='./data', train=False, transform=transforms.ToTensor())
 
@@ -34,12 +33,14 @@ sampler_test = torch.utils.data.sampler.SubsetRandomSampler(indices_test)
 validation_loader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=False, sampler=sampler_val)
 test_loader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=False, sampler=sampler_test)
 
+## image check
 # idx = 150
 # muteimg = train_dataset[idx][0].numpy()
 # plt.imshow(muteimg[0, ...])
 # print(train_dataset[idx][1])
 # plt.show()
 
+## CNN network
 depth = [4, 8]
 class ConvNet(nn.Module):
     def __init__(self):
@@ -78,22 +79,22 @@ net = ConvNet()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
-# # Print model's state_dict
+## Print model's state_dict
 # print("Model's state_dict:")
 # for param_tensor in net.state_dict():
 #     print(param_tensor, "\t", net.state_dict()[param_tensor].size())
 #
-# # Print optimizer's state_dict
+## Print optimizer's state_dict
 # print("Optimizer's state_dict:")
 # for var_name in optimizer.state_dict():
 #     print(var_name, "\t", optimizer.state_dict()[var_name])
 
-# # SAVE model"net" test
+## SAVE model "net" test
 # torch.save(net.state_dict(), 'model.test')
 
+## Training start~
 record = []
 weights = []
-
 for epoch in range(num_epochs):
     train_rights = []
     for batch_idx, (data, target) in enumerate(train_loader):
@@ -120,24 +121,45 @@ for epoch in range(num_epochs):
             record.append((100-100.*train_r[0]/train_r[1], 100-100.*val_r[0]/val_r[1]))
             weights.append([net.conv1.weight.data.clone(), net.conv1.bias.data.clone(), net.conv2.weight.data.clone(), net.conv2.bias.data.clone()])
 
-torch.save(net, 'integral_model.pth')
-torch.save(net.state_dict(), 'model_only weights.pth')
-# net.eval()
-# vals = []
-# for data, target in test_loader:
-#     data, target = Variable(data), Variable(target)
-#     output = net(data)
-#     val = rightness(output, target)
-#     vals.append(val)
-#
-# right = (sum([tup[0] for tup in vals]), sum([tup[1] for tup in vals]))
-# right_rate = 1.0*right[0]/right[1]
-# print(right_rate.data)
-#
+# Print result of train
 # plt.figure(figsize=(10, 7))
 # plt.plot(record)
 # plt.legend()
 # plt.xlabel('step')
 # plt.ylabel('Error rate')
 # plt.show()
+
+## Save trained model "net"
+torch.save(net, 'integral_model.pth')
+torch.save(net.state_dict(), 'model_only weights.pth')
+
+## Testing start~
+net.eval()
+vals = []
+for data, target in test_loader:
+    data, target = Variable(data), Variable(target)
+    output = net(data)
+    val = rightness(output, target)
+    vals.append(val)
+
+right = (sum([tup[0] for tup in vals]), sum([tup[1] for tup in vals]))
+right_rate = 1.0*right[0]/right[1]
+print(right_rate.data)
+
+
+## Loaded model test
+model = torch.load('integral_model.pth')
+model.eval()
+
+vals_m = []
+for data_m, target_m in test_loader:
+    data_m, target_m = Variable(data_m), Variable(target_m)
+    output_m = model(data_m)
+    val_m = rightness(output_m, target_m)
+    vals_m.append(val_m)
+
+right_m = (sum([tup[0] for tup in vals_m]), sum([tup[1] for tup in vals_m]))
+right_rate_m = 1.0*right_m[0]/right_m[1]
+print(right_rate_m.data)
+
 
