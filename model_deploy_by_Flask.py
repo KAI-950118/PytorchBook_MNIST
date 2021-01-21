@@ -65,26 +65,46 @@ def load_model(path):
 def predict():
     output_dict = {"success": False}
     if flask.request.method == "POST":
-        data = flask.request.json
 
-        ## read the image in PIL format
-        response = requests.get(data["image"])
-        image = Image.open(BytesIO(response.content))
-        # print(image)
-        # print(type(image))
-
-        ## transform image
-        image_tensor = data_transforms(image).float()
-        image_tensor = image_tensor.unsqueeze_(0)
+        # ## URL
+        # data = flask.request.json
+        #
+        # # read the image in PIL format
+        # response = requests.get(data["image"])
+        # image = Image.open(BytesIO(response.content))
+        # # print(image)
+        # # print(type(image))
+        #
+        # # transform image
+        # image_tensor = data_transforms(image).float()
+        # image_tensor = image_tensor.unsqueeze_(0)
         # print(image_tensor)
+        #
+        # # prediction
+        # output = model(image_tensor)
+        # # print(output)
+        # _, predicted = torch.max(output.data, 1)
+        # print(classes[predicted])
+        # output_dict["predictions"] = classes[predicted]
+        # output_dict["success"] = True
 
-        ## prediction
-        output = model(image_tensor)
+        ########################################
+
+        ## List
+        # get list by json
+        data = flask.request.json["image"]
+        list_tensor = torch.Tensor(data)
+        list_tensor = list_tensor.unsqueeze_(0)
+        # print(list_tensor)
+
+        # prediction
+        output = model(list_tensor)
         # print(output)
         _, predicted = torch.max(output.data, 1)
         print(classes[predicted])
         output_dict["predictions"] = classes[predicted]
         output_dict["success"] = True
+
     return flask.jsonify(output_dict), 200
 
 ## method = "GET"

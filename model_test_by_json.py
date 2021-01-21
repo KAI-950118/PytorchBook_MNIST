@@ -11,10 +11,8 @@ import numpy as np
 import requests
 import json
 from PIL import Image
-import pyimgur
 
 data_transforms = transforms.Compose([transforms.ToTensor()])
-CLIENT_ID = "3fa55bc53a3cf95"
 
 ## MNIST sample images "from https://gist.github.com/peterroelants/3a490905f5b022fea66e0553af51abb8"
 # IMAGE_URLS = [
@@ -32,24 +30,33 @@ CLIENT_ID = "3fa55bc53a3cf95"
 
 ## loading test data
 test_dataset = dsets.MNIST(root='./data', train=False, download=True)
-idx = 5432
-test_data = test_dataset[idx][0]
-print(test_data)
-print(type(test_data))
-print(test_dataset[idx][1])
+idx = 7811
+test_image = test_dataset[idx][0]
+# print(type(test_image))
+test_tensor = data_transforms(test_image).numpy()
+# print(type(test_tensor))
+test_list = test_tensor.tolist()
+# print(type(test_list))
 
-title = str(idx) +"-"+ str(test_dataset[idx][1])
+## Show the image
+plt.imshow(test_tensor[0, ...])
+# print(test_dataset[idx][1])
+plt.show()
 
-## upload the MNIST data to Imgur
-# im = pyimgur.Imgur(CLIENT_ID)
-# uploaded_image = im.upload_image(test_data, title=title)
-# print(uploaded_image.title)
-# print(uploaded_image.link)
-# print(uploaded_image.type)
 
-## method = "POST"
-req = requests.post('http://127.0.0.1:5000/predict', json={'image': 'https://i.imgur.com/Y28rZho.png'})
-print(json.loads(req.content))
+## method = "POST"  URL
+# req = requests.post('http://127.0.0.1:5000/predict', json={'image': 'https://i.imgur.com/Y28rZho.png'})
+# print(json.loads(req.content))
+# dict = json.loads(req.content)
+# print("Prediction:", dict["predictions"])
+# print("Answer:", test_dataset[idx][1])
+
+## method = "POST"  list
+req = requests.post('http://127.0.0.1:5000/predict', json={'image': test_list})
+# print(json.loads(req.content))
+dict = json.loads(req.content)
+print("Prediction:", dict["predictions"])
+print("Answer:", test_dataset[idx][1])
 
 ## method = "GET"
 # req = requests.get('http://127.0.0.1:5000/performance')
