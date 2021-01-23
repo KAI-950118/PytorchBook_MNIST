@@ -3,8 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="5c34495b-92c9-4a34-b7fe-da31fce82665" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_deploy_by_Flask.py" beforeDir="false" afterPath="$PROJECT_DIR$/model_deploy_by_Flask.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_test_by_json.py" beforeDir="false" afterPath="$PROJECT_DIR$/model_test_by_json.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/book_MNIST_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/book_MNIST_main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/book_MNIST_main_Cuda.py" beforeDir="false" afterPath="$PROJECT_DIR$/book_MNIST_main_Cuda.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

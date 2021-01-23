@@ -8,10 +8,6 @@ import torchvision.datasets as dsets
 import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
 import numpy as np
-from numba import cuda
-# print(cuda.gpus)
-
-
 
 image_size = 28
 num_classes = 10

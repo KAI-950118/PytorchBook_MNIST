@@ -3,10 +3,8 @@ import torch.nn as nn
 from torch.autograd import Variable
 import torch.optim as optim
 import torch.nn.functional as F
-
 import torchvision.datasets as dsets
 import torchvision.transforms as transforms
-
 import matplotlib.pyplot as plt
 import numpy as np
 from numba import cuda
@@ -19,6 +17,7 @@ num_classes = 10
 num_epochs = 2
 batch_size = 64
 
+## Data pre-process
 train_dataset = dsets.MNIST(root='./data', train=True, transform=transforms.ToTensor(), download=True)
 test_dataset = dsets.MNIST(root='./data', train=False, transform=transforms.ToTensor())
 
@@ -33,12 +32,14 @@ sampler_test = torch.utils.data.sampler.SubsetRandomSampler(indices_test)
 validation_loader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=False, sampler=sampler_val)
 test_loader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=False, sampler=sampler_test)
 
-idx = 150
+## image check
+# idx = 150
 # muteimg = train_dataset[idx][0].numpy()
 # plt.imshow(muteimg[0, ...])
 # print(train_dataset[idx][1])
 # plt.show()
 
+## CNN network
 depth = [4, 8]
 class ConvNet(nn.Module):
     def __init__(self):
@@ -72,7 +73,7 @@ def rightness(y, target):
     out1 = y.size()[0]
     return(rights, out1)
 
-
+## device change to GPU
 net = ConvNet().cuda()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
@@ -81,6 +82,7 @@ record_t = []
 record_v = []
 weights = []
 
+## Training start~
 for epoch in range(num_epochs):
     train_rights = []
     for batch_idx, (data, target) in enumerate(train_loader):
@@ -109,6 +111,7 @@ for epoch in range(num_epochs):
             record_v.append(100-100.*val_r[0]/val_r[1])
             weights.append([net.conv1.weight.data.clone(), net.conv1.bias.data.clone(), net.conv2.weight.data.clone(), net.conv2.bias.data.clone()])
 
+## Testing start~
 net.eval()
 vals = []
 for data, target in test_loader:
